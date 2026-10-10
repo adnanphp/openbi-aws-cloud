@@ -1,0 +1,6 @@
+# Example variable overrides.
+#
+# Copy this file to terraform.tfvars to change defaults.
+# The real terraform.tfvars file is gitignored.
+
+aws_region = "eu-central-1"

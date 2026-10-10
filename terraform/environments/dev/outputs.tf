@@ -1,0 +1,24 @@
+# Outputs visible after `terraform apply`.
+#
+# These are mostly useful as a reference — they show what was created
+# and provide IDs that later modules will need.
+
+output "vpc_id" {
+  description = "ID of the dev VPC"
+  value       = module.vpc.vpc_id
+}
+
+output "public_subnet_ids" {
+  description = "Public subnets in the dev VPC"
+  value       = module.vpc.public_subnet_ids
+}
+
+output "private_subnet_ids" {
+  description = "Private subnets in the dev VPC"
+  value       = module.vpc.private_subnet_ids
+}
+
+output "baseline_security_group_id" {
+  description = "Baseline security group ID"
+  value       = module.vpc.baseline_security_group_id
+}
