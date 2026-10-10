@@ -14,7 +14,7 @@ This repository contains a **complete AWS deployment configuration** for OpenBI.
 | Terraform formatting | ✅ `terraform fmt -check` passes |
 | Terraform linting | ✅ `tflint` passes |
 | Kubernetes manifests | 📋 planned |
-| IAM policies | 📋 planned |
+| IAM trust policies | ✅ JSON validated; not applied |
 | End-to-end deployment | ❌ not verified — requires AWS account |
 
 See [docs/verification.md](docs/verification.md) for the full breakdown. The status is documented explicitly because it matters: infrastructure code that has not been applied is a different artifact from infrastructure code that has.
