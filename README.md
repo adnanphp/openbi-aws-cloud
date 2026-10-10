@@ -107,3 +107,21 @@ openbi-gcp-cloud (planned) — GCP equivalent
 
 License
 MIT
+
+---
+
+## Status — Phase A2 (current)
+
+Phase A2 delivers the IAM foundation:
+
+- ✅ EKS cluster service role + policy attachments
+- ✅ EKS node group service role + policy attachments
+- ✅ Base IRSA template role
+- ✅ Trust policies as documented JSON files (`iam/policies/`)
+- ✅ `docs/iam-overview.md`
+- ✅ JSON validation in `scripts/validate.sh`
+- ⏳ (next) ECR, EKS, S3, RDS, SQS, ALB, CloudWatch
+
+---
+
+*Earlier: Phase A1 delivered the VPC (see [ROADMAP.md](ROADMAP.md)).*

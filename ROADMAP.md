@@ -23,7 +23,7 @@ baseline security group, VPC Flow Logs.
 
 ---
 
-## Phase A2 — IAM foundation
+## Phase A2 — IAM foundation ✅
 
 **Scope:** The IAM roles and policies that later phases will attach to
 services.
@@ -38,7 +38,7 @@ services.
 
 ---
 
-## Phase A3 — ECR
+## Phase A3 — ECR (next)
 
 **Scope:** Container image registry.
 

@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
-# Static validation for the Terraform and Kubernetes configuration.
+# Static validation for the Terraform, JSON policies, and Kubernetes config.
 #
 # Runs entirely offline — no AWS credentials or account required.
 #
 # Prerequisites:
 #   - terraform (>= 1.5.0)
+#   - jq (for JSON policy validation)
 #   - tflint (optional but recommended)
+#   - kubeconform (optional, for K8s manifests — not used yet)
 
 set -euo pipefail
 
@@ -27,6 +29,24 @@ echo
 echo "==> terraform validate in environments/dev"
 (cd terraform/environments/dev && terraform validate)
 echo "    OK"
+
+if command -v jq >/dev/null 2>&1; then
+  echo
+  echo "==> JSON policy validation (jq)"
+  shopt -s nullglob
+  for f in iam/policies/*.json; do
+    if jq empty "$f" 2>/dev/null; then
+      echo "    OK: $f"
+    else
+      echo "    INVALID: $f"
+      exit 1
+    fi
+  done
+  shopt -u nullglob
+else
+  echo
+  echo "==> jq not installed, skipping JSON validation"
+fi
 
 if command -v tflint >/dev/null 2>&1; then
   echo

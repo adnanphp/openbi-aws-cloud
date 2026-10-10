@@ -22,3 +22,17 @@ output "baseline_security_group_id" {
   description = "Baseline security group ID"
   value       = module.vpc.baseline_security_group_id
 }
+
+# ----------------------------------------------------------------------
+# IAM outputs
+# ----------------------------------------------------------------------
+
+output "eks_cluster_role_arn" {
+  description = "ARN of the EKS cluster service role"
+  value       = module.iam.eks_cluster_role_arn
+}
+
+output "eks_node_role_arn" {
+  description = "ARN of the EKS node group service role"
+  value       = module.iam.eks_node_role_arn
+}
