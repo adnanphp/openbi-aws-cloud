@@ -1,0 +1,88 @@
+@startuml OpenBI-AWS-Architecture-High-Level
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "Helvetica"
+skinparam defaultFontSize 13
+skinparam shadowing false
+skinparam rectangle {
+  BackgroundColor #F8F9FA
+  BorderColor #232F3E
+  RoundCorner 8
+}
+skinparam component {
+  BackgroundColor #FFFFFF
+  BorderColor #232F3E
+}
+skinparam arrow {
+  Color #232F3E
+  Thickness 1.5
+}
+
+title OpenBI on AWS — High-Level Architecture\n<size:11>Data platform + BI + API, deployed on managed AWS services</size>
+
+' ============ User ============
+actor "User\n(Browser / CLI)" as user #E8F5E9
+
+' ============ Edge ============
+rectangle "AWS Edge" as edge #FFF3E0 {
+  component "Application Load Balancer\n(internet-facing or internal)" as alb
+}
+
+' ============ Compute ============
+rectangle "Amazon EKS — Kubernetes Cluster" as eks #E3F2FD {
+  component "FastAPI\n(2 replicas)" as fastapi
+  component "Superset\n(1 replica)" as superset
+  component "Cluster controllers:\n- Cluster Autoscaler\n- ALB Controller\n- External Secrets" as controllers
+  component "Cluster add-ons:\n- Fluent Bit (logs)\n- CloudWatch Agent (metrics)" as addons
+  component "On-demand nodes\n(critical workloads)" as ond
+  component "Spot nodes\n(user workloads)" as spot
+}
+
+' ============ Managed services ============
+rectangle "AWS Managed Data Services" as data #F3E5F5 {
+  component "Amazon RDS\n(PostgreSQL 16)" as rds
+  component "Amazon S3\n(raw / processed / models)" as s3
+  component "Amazon SQS\n(events + DLQ)" as sqs
+}
+
+' ============ Operations ============
+rectangle "Observability & Identity" as ops #FCE4EC {
+  component "CloudWatch\nLogs / Metrics / Alarms" as cw
+  component "Secrets Manager" as sm
+  component "IAM + OIDC\n(IRSA)" as iam
+}
+
+' ============ Container registry ============
+rectangle "Container Registry" as ecr_box #ECEFF1 {
+  component "Amazon ECR\n(OpenBI images)" as ecr
+}
+
+' ============ Flows ============
+user --> alb : HTTPS
+alb --> fastapi : HTTP
+alb --> superset : HTTP
+
+fastapi --> rds : SQL (TLS)
+fastapi --> s3 : S3 API
+fastapi --> sqs : Send / Receive
+superset --> rds : SQL
+
+controllers --> iam : assume role
+controllers --> ecr : pull images
+addons --> cw : ship logs / metrics
+
+rds ..> sm : credentials
+fastapi ..> sm : via External Secrets
+iam ..> eks : IRSA tokens
+eks ..> ecr : pull on schedule
+
+' ============ Legend ============
+legend right
+  |<#FFF3E0>| Edge layer |
+  |<#E3F2FD>| Compute (EKS) |
+  |<#F3E5F5>| Data services |
+  |<#FCE4EC>| Observability & Identity |
+  |<#ECEFF1>| Container registry |
+endlegend
+
+@enduml
