@@ -286,3 +286,13 @@ Phase A11 delivers deployment and operational documentation:
 ---
 
 *Earlier phases: A1–A10.*
+
+### CI history
+
+Each phase added more green runs. Screenshots from a few checkpoints:
+
+| Phase | Screenshot |
+| --- | --- |
+| A1–A3 | ![CI after Phase A3](docs/images/workflows_01.png) |
+| A4–A7 | ![CI after Phase A7](docs/images/workflows_02.png) |
+| A8–A11 | ![CI after Phase A11](docs/images/workflows_03.png) |
