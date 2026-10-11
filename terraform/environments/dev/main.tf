@@ -72,3 +72,19 @@ module "iam" {
 
   tags = local.common_tags
 }
+
+# ----------------------------------------------------------------------
+# ECR
+# ----------------------------------------------------------------------
+
+module "ecr" {
+  source = "../../modules/ecr"
+
+  name_prefix     = local.name_prefix
+  repository_name = "openbi"
+
+  # Dev convenience: allow `terraform destroy` even with images present.
+  force_delete = true
+
+  tags = local.common_tags
+}
