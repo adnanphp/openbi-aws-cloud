@@ -79,7 +79,7 @@ services.
 
 ---
 
-## Phase A6 — RDS for PostgreSQL (next)
+## Phase A6 — RDS for PostgreSQL ✅
 
 **Scope:** Managed Postgres to replace the local Postgres.
 
@@ -94,7 +94,7 @@ services.
 
 ---
 
-## Phase A7 — SQS
+## Phase A7 — SQS (next)
 
 **Scope:** Messaging to complement Kafka.
 

@@ -154,3 +154,32 @@ module "s3" {
 
   tags = local.common_tags
 }
+
+# ----------------------------------------------------------------------
+# RDS
+# ----------------------------------------------------------------------
+
+module "rds" {
+  source = "../../modules/rds"
+
+  name_prefix     = local.name_prefix
+  db_name         = "openbi"
+  master_username = "openbiadmin"
+  instance_class  = "db.t4g.micro"
+
+  vpc_id             = module.vpc.vpc_id
+  private_subnet_ids = module.vpc.private_subnet_ids
+
+  # Allow the cluster baseline SG to reach the DB.
+  allowed_security_group_ids = [module.vpc.baseline_security_group_id]
+
+  # Dev sizing: single-AZ, no deletion protection, no final snapshot.
+  multi_az                 = false
+  backup_retention_days    = 7
+  deletion_protection      = false
+  skip_final_snapshot      = true
+  allocated_storage_gb     = 20
+  max_allocated_storage_gb = 100
+
+  tags = local.common_tags
+}

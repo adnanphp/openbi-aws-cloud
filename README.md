@@ -171,3 +171,24 @@ Phase A5 delivers S3 object storage:
 ---
 
 *Earlier phases: A1 (VPC), A2 (IAM), A3 (ECR), A4 (EKS).*
+
+---
+
+## Status — Phase A6 (current)
+
+Phase A6 delivers RDS for PostgreSQL:
+
+- ✅ PostgreSQL 16 on `db.t4g.micro` (ARM), 20 GB gp3
+- ✅ Private subnets only; no public access
+- ✅ Parameter group tuned for analytical workloads
+- ✅ Secrets Manager-managed master password (RDS-managed rotation)
+- ✅ IAM database authentication enabled
+- ✅ Automated backups (7-day retention) + PITR
+- ✅ Performance Insights (7-day retention, free)
+- ✅ CloudWatch Logs export for postgresql + upgrade logs
+- ✅ `python/rds_connection.py` (both auth paths)
+- ✅ `docs/rds.md`
+
+---
+
+*Earlier phases: A1 (VPC), A2 (IAM), A3 (ECR), A4 (EKS), A5 (S3).*

@@ -84,3 +84,24 @@ output "s3_models_bucket" {
   description = "Name of the models bucket"
   value       = module.s3.models_bucket_name
 }
+
+# ----------------------------------------------------------------------
+# RDS outputs
+# ----------------------------------------------------------------------
+
+output "rds_endpoint" {
+  description = "RDS instance endpoint"
+  value       = module.rds.db_endpoint
+  sensitive   = true
+}
+
+output "rds_secret_arn" {
+  description = "ARN of the Secrets Manager secret with the master password"
+  value       = module.rds.master_user_secret_arn
+  sensitive   = true
+}
+
+output "rds_security_group_id" {
+  description = "RDS security group ID"
+  value       = module.rds.security_group_id
+}
