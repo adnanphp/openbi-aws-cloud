@@ -149,7 +149,7 @@ services.
 
 ---
 
-## Phase A11 — Deployment scripts + documentation (next)
+## Phase A11 — Deployment scripts + documentation ✅
 
 **Scope:** The end-to-end story.
 
@@ -164,7 +164,7 @@ services.
 
 ---
 
-## Phase A12 — Optional live validation
+## Phase A12 — Optional live validation (next)
 
 **Scope:** If you ever have an AWS account and budget.
 

@@ -102,3 +102,41 @@ Every claim in this repository should be traceable to one of these
 tiers. If a claim cannot be verified to the level it implies, either
 the claim or the verification tier should be adjusted. This section is
 the anchor for that discipline.
+
+---
+
+## Current status (all phases A1–A11 complete)
+
+| Layer | Syntax | Static | Applied |
+| --- | --- | --- | --- |
+| Terraform — all modules | ✅ | ✅ | ❌ |
+| Terraform — dev composition | ✅ | ✅ | ❌ |
+| Kubernetes manifests | ✅ | ⏳ | ❌ |
+| IAM trust policies | ✅ | ✅ | ❌ |
+| Shell scripts | ✅ | — | ❌ |
+| End-to-end deployment | — | — | ❌ |
+
+**Legend:**
+- ✅ verified
+- ⏳ not yet validated (kubeconform not wired into CI)
+- ❌ not verified
+- — not applicable
+
+## What's not validated
+
+- **Kubernetes manifests** are syntactically correct YAML but not
+  validated by `kubeconform` in CI. Adding that is a documented future
+  enhancement.
+- **Shell scripts** have not been executed end-to-end.
+- **`terraform plan`** has not been run (would require AWS credentials
+  to query provider data sources).
+- **The complete deployment procedure** has not been executed.
+
+## What would change this
+
+Running `terraform plan` against a real AWS account (read-only, no
+resources created) would move the Terraform rows from ⚠️ to ✅. Running
+`terraform apply` would move them to "Applied."
+
+Both are documented in `deployment.md`. Neither is required to use this
+repo as a reference.

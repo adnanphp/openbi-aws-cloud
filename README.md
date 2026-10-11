@@ -268,3 +268,21 @@ LocalStack — those are now managed AWS services.
 ---
 
 *Earlier phases: A1–A9.*
+
+---
+
+## Status — Phase A11 (current)
+
+Phase A11 delivers deployment and operational documentation:
+
+- ✅ `scripts/deploy.sh` — full deployment (dry-run by default)
+- ✅ `scripts/teardown.sh` — reverse of deploy (dry-run by default)
+- ✅ `scripts/status.sh` — show current deployment state
+- ✅ `docs/deployment.md` — step-by-step deployment guide
+- ✅ `docs/teardown.md` — safe teardown procedure
+- ✅ `docs/troubleshooting.md` — common failure modes
+- ✅ Updated `docs/verification.md`
+
+---
+
+*Earlier phases: A1–A10.*
