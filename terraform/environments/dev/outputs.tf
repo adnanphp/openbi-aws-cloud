@@ -45,3 +45,23 @@ output "ecr_repository_url" {
   description = "URL of the ECR repository"
   value       = module.ecr.repository_url
 }
+
+# ----------------------------------------------------------------------
+# EKS outputs
+# ----------------------------------------------------------------------
+
+output "eks_cluster_name" {
+  description = "Name of the EKS cluster"
+  value       = module.eks.cluster_name
+}
+
+output "eks_cluster_endpoint" {
+  description = "EKS cluster API endpoint"
+  value       = module.eks.cluster_endpoint
+  sensitive   = true
+}
+
+output "eks_oidc_provider_arn" {
+  description = "ARN of the OIDC provider"
+  value       = module.eks.oidc_provider_arn
+}

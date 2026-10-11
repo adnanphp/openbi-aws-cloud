@@ -51,7 +51,7 @@ services.
 
 ---
 
-## Phase A4 — EKS
+## Phase A4 — EKS ✅
 
 **Scope:** The Kubernetes cluster.
 
@@ -66,7 +66,7 @@ services.
 
 ---
 
-## Phase A5 — S3
+## Phase A5 — S3 (next)
 
 **Scope:** Object storage to replace MinIO.
 

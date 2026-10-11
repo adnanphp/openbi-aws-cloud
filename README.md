@@ -133,3 +133,23 @@ policies. The workflow needs no AWS credentials and creates no
 resources.
 
 ![Green CI runs](docs/images/workflows_01.png)
+
+---
+
+## Status — Phase A4 (current)
+
+Phase A4 delivers the EKS cluster:
+
+- ✅ EKS cluster (private endpoint, all control plane logs to CloudWatch)
+- ✅ Two managed node groups: on-demand (critical) + spot (workloads)
+- ✅ OIDC provider for IRSA
+- ✅ EBS CSI driver IRSA role + cluster add-on
+- ✅ Cluster add-ons: VPC CNI, CoreDNS, kube-proxy, EBS CSI
+- ✅ Kubernetes manifest directory structure
+- ✅ `docs/eks.md`
+
+See [ROADMAP.md](ROADMAP.md) for the full plan.
+
+---
+
+*Earlier phases: A1 (VPC), A2 (IAM), A3 (ECR).*

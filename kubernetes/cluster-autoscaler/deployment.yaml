@@ -1,0 +1,155 @@
+
+Cluster Autoscaler.
+Scales the spot node group based on demand.
+Requires an IRSA role (see README.md in this directory).
+Apply with:
+kubectl apply -f kubernetes/cluster-autoscaler/deployment.yaml
+IMPORTANT: replace the placeholder role ARN below with the one you
+created via the setup commands in README.md.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+name: cluster-autoscaler
+namespace: kube-system
+annotations:
+
+Placeholder — replace with the real ARN from the setup steps
+eks.amazonaws.com/role-arn: arn:aws:iam::ACCOUNT_ID:role/openbi-dev-cluster-autoscaler
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+name: cluster-autoscaler
+rules:
+
+apiGroups: [""]
+resources: ["events", "endpoints"]
+verbs: ["create", "patch"]
+
+apiGroups: [""]
+resources: ["pods/eviction"]
+verbs: ["create"]
+
+apiGroups: [""]
+resources: ["pods/status"]
+verbs: ["update"]
+
+apiGroups: [""]
+resources: ["endpoints"]
+resourceNames: ["cluster-autoscaler"]
+verbs: ["get", "update"]
+
+apiGroups: [""]
+resources: ["nodes"]
+verbs: ["watch", "list", "get", "update"]
+
+apiGroups: [""]
+resources: ["namespaces", "pods", "services", "replicationcontrollers", "persistentvolumeclaims", "persistentvolumes"]
+verbs: ["watch", "list", "get"]
+
+apiGroups: ["extensions"]
+resources: ["replicasets", "daemonsets"]
+verbs: ["watch", "list", "get"]
+
+apiGroups: ["policy"]
+resources: ["poddisruptionbudgets"]
+verbs: ["watch", "list"]
+
+apiGroups: ["apps"]
+resources: ["statefulsets", "replicasets", "daemonsets"]
+verbs: ["watch", "list", "get"]
+
+apiGroups: ["storage.k8s.io"]
+resources: ["storageclasses", "csinodes", "csidrivers", "csistoragecapacities"]
+verbs: ["watch", "list", "get"]
+
+apiGroups: ["batch", "extensions"]
+resources: ["jobs"]
+verbs: ["get", "list", "watch", "patch"]
+
+apiGroups: ["coordination.k8s.io"]
+resources: ["leases"]
+verbs: ["create"]
+
+apiGroups: ["coordination.k8s.io"]
+resources: ["leases"]
+resourceNames: ["cluster-autoscaler"]
+verbs: ["get", "update"]
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+name: cluster-autoscaler
+roleRef:
+apiGroup: rbac.authorization.k8s.io
+kind: ClusterRole
+name: cluster-autoscaler
+subjects:
+
+kind: ServiceAccount
+name: cluster-autoscaler
+namespace: kube-system
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+name: cluster-autoscaler
+namespace: kube-system
+labels:
+app: cluster-autoscaler
+spec:
+replicas: 1
+selector:
+matchLabels:
+app: cluster-autoscaler
+template:
+metadata:
+labels:
+app: cluster-autoscaler
+spec:
+serviceAccountName: cluster-autoscaler
+priorityClassName: system-cluster-critical
+containers:
+
+name: cluster-autoscaler
+image: registry.k8s.io/autoscaling/cluster-autoscaler:v1.30.0
+command:
+
+./cluster-autoscaler
+
+--v=4
+
+--stderrthreshold=info
+
+--cloud-provider=aws
+
+--skip-nodes-with-local-storage=false
+
+--expander=least-waste
+
+--node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/openbi-dev
+
+--balance-similar-node-groups
+
+--skip-nodes-with-system-pods=false
+resources:
+requests:
+cpu: 100m
+memory: 300Mi
+env:
+
+name: AWS_REGION
+value: eu-central-1
+
+name: AWS_STS_REGIONAL_ENDPOINTS
+value: regional
+volumeMounts:
+
+name: ssl-certs
+mountPath: /etc/ssl/certs/ca-certificates.crt
+readOnly: true
+volumes:
+
+name: ssl-certs
+hostPath:
+path: /etc/ssl/certs/ca-bundle.crt

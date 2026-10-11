@@ -88,3 +88,44 @@ module "ecr" {
 
   tags = local.common_tags
 }
+
+# ----------------------------------------------------------------------
+# EKS
+# ----------------------------------------------------------------------
+
+module "eks" {
+  source = "../../modules/eks"
+
+  name_prefix        = local.name_prefix
+  cluster_name       = "openbi-dev"
+  kubernetes_version = "1.30"
+
+  vpc_id             = module.vpc.vpc_id
+  private_subnet_ids = module.vpc.private_subnet_ids
+
+  cluster_role_arn = module.iam.eks_cluster_role_arn
+  node_role_arn    = module.iam.eks_node_role_arn
+
+  # Private endpoint only by default.
+  endpoint_private_access = true
+  endpoint_public_access  = false
+
+  # All five control plane log types, 7-day retention.
+  enabled_cluster_log_types  = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+  cluster_log_retention_days = 7
+
+  # Small dev cluster: 1 on-demand node (critical), 0-3 spot nodes (workloads).
+  on_demand_instance_types = ["t3.medium"]
+  on_demand_desired_size   = 1
+  on_demand_min_size       = 1
+  on_demand_max_size       = 2
+
+  spot_instance_types = ["t3.medium", "t3a.medium", "t2.medium"]
+  spot_desired_size   = 1
+  spot_min_size       = 0
+  spot_max_size       = 3
+
+  node_disk_size_gb = 30
+
+  tags = local.common_tags
+}
