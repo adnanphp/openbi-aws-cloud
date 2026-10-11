@@ -76,6 +76,8 @@ For example, SQS is suitable for queue-based messaging but is not a drop-in repl
 
 See the [OpenBI cloud-mapping documentation](https://github.com/adnanphp/openbi/blob/main/docs/cloud-mapping.md) for the broader mapping.
 
+![OpenBI on AWS — high-level architecture](docs/diagrams/architecture-high-level.svg)
+
 ### High-level architecture
 
 ```text
