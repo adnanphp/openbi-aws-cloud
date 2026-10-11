@@ -183,3 +183,28 @@ module "rds" {
 
   tags = local.common_tags
 }
+
+# ----------------------------------------------------------------------
+# SQS
+# ----------------------------------------------------------------------
+
+module "sqs" {
+  source = "../../modules/sqs"
+
+  name_prefix  = local.name_prefix
+  queue_name   = "openbi-events"
+  queue_suffix = var.bucket_suffix # reuse the same uniqueness suffix
+
+  # Long polling enabled by default.
+  receive_wait_time_seconds = 20
+
+  # Standard SQS retention defaults; DLQ retains longer.
+  message_retention_seconds     = 345600  # 4 days
+  dlq_message_retention_seconds = 1209600 # 14 days
+  max_receive_count             = 3
+
+  # SSE-SQS encryption (free, always on).
+  sqs_managed_sse_enabled = true
+
+  tags = local.common_tags
+}

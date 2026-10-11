@@ -105,3 +105,17 @@ output "rds_security_group_id" {
   description = "RDS security group ID"
   value       = module.rds.security_group_id
 }
+
+# ----------------------------------------------------------------------
+# SQS outputs
+# ----------------------------------------------------------------------
+
+output "sqs_main_queue_url" {
+  description = "URL of the events queue"
+  value       = module.sqs.main_queue_url
+}
+
+output "sqs_dlq_url" {
+  description = "URL of the dead-letter queue"
+  value       = module.sqs.dlq_url
+}

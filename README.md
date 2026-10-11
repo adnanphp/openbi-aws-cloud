@@ -192,3 +192,21 @@ Phase A6 delivers RDS for PostgreSQL:
 ---
 
 *Earlier phases: A1 (VPC), A2 (IAM), A3 (ECR), A4 (EKS), A5 (S3).*
+
+---
+
+## Status — Phase A7 (current)
+
+Phase A7 delivers SQS messaging:
+
+- ✅ Standard events queue + dead-letter queue
+- ✅ Redrive policy (max 3 receives → DLQ)
+- ✅ Long polling enabled by default (20s)
+- ✅ SSE-SQS encryption
+- ✅ Queue policies denying non-account access and insecure transport
+- ✅ `python/sqs_operations.py` — send, long-poll receive, DLQ flow
+- ✅ `docs/sqs.md`
+
+---
+
+*Earlier phases: A1 (VPC), A2 (IAM), A3 (ECR), A4 (EKS), A5 (S3), A6 (RDS).*

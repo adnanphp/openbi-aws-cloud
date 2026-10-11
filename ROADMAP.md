@@ -94,7 +94,7 @@ services.
 
 ---
 
-## Phase A7 — SQS (next)
+## Phase A7 — SQS ✅
 
 **Scope:** Messaging to complement Kafka.
 
@@ -106,7 +106,7 @@ services.
 
 ---
 
-## Phase A8 — ALB + Ingress
+## Phase A8 — ALB + Ingress (next)
 
 **Scope:** External access.
 
