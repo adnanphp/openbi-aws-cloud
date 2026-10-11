@@ -1,0 +1,16 @@
+# Non-secret configuration for OpenBI services.
+#
+# Values that don't need to be secrets: bucket names, queue URLs,
+# region. Credentials go in Secrets (see external-secret.yaml).
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: openbi-config
+data:
+  AWS_REGION: "eu-central-1"
+  S3_RAW_BUCKET: "openbi-raw-REPLACE"
+  S3_PROCESSED_BUCKET: "openbi-processed-REPLACE"
+  S3_MODELS_BUCKET: "openbi-models-REPLACE"
+  SQS_EVENTS_QUEUE_URL: "https://sqs.eu-central-1.amazonaws.com/REPLACE/openbi-events-REPLACE"
+  LOG_LEVEL: "INFO"

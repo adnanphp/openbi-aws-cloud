@@ -1,0 +1,83 @@
+# OpenBI FastAPI service.
+#
+# Connects to RDS (external) and S3 (external). No local Postgres.
+# Database credentials come from an ExternalSecret; everything else
+# comes from a ConfigMap.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi
+  labels:
+    app: fastapi
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: fastapi
+  template:
+    metadata:
+      labels:
+        app: fastapi
+    spec:
+      containers:
+        - name: fastapi
+          image: REPLACE-WITH-ECR-URL/openbi:fastapi-latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: openbi-config
+          env:
+            # Assemble DATABASE_URL from the ExternalSecret-managed
+            # Kubernetes Secret.
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: openbi-db-credentials
+                  key: host
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: openbi-db-credentials
+                  key: host
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: openbi-db-credentials
+                  key: port
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: openbi-db-credentials
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: openbi-db-credentials
+                  key: password
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: openbi-db-credentials
+                  key: dbname
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi

@@ -1,0 +1,67 @@
+# Apache Superset.
+#
+# Superset stores its metadata in a database (uses the same RDS
+# instance, separate database) and its query cache in Redis (not
+# included in this lab; documented as a gap).
+#
+# Single replica for simplicity. A production deployment would use
+# multiple replicas with a shared metadata DB and a Redis cache.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: superset
+  labels:
+    app: superset
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: superset
+  template:
+    metadata:
+      labels:
+        app: superset
+    spec:
+      containers:
+        - name: superset
+          image: apache/superset:3.1.3
+          ports:
+            - containerPort: 8088
+          env:
+            - name: SUPERSET_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: openbi-superset-secret
+                  key: secret_key
+            - name: DATABASE_DB
+              value: "superset"
+          envFrom:
+            - configMapRef:
+                name: openbi-config
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 2Gi
+---
+# Superset secret, synced from AWS Secrets Manager.
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: openbi-superset-secret
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: aws-secrets-manager
+    kind: ClusterSecretStore
+  target:
+    name: openbi-superset-secret
+    creationPolicy: Owner
+  data:
+    - secretKey: secret_key
+      remoteRef:
+        key: openbi/dev/superset
+        property: secret_key

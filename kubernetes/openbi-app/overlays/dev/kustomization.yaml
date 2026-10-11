@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: openbi
+
+resources:
+  - ../../base
+
+# Dev-specific patches
+patches:
+  # In dev, only 1 FastAPI replica (fewer resources).
+  - target:
+      kind: Deployment
+      name: fastapi
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 1
+
+# Dev-specific labels
+commonLabels:
+  environment: dev

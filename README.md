@@ -245,3 +245,26 @@ Phase A9 delivers CloudWatch observability and Secrets Manager:
 ---
 
 *Earlier phases: A1 (VPC), A2 (IAM), A3 (ECR), A4 (EKS), A5 (S3), A6 (RDS), A7 (SQS), A8 (ALB).*
+
+---
+
+## Status — Phase A10 (current)
+
+Phase A10 delivers the OpenBI Kubernetes manifests for EKS:
+
+- ✅ Kustomize base + dev overlay for OpenBI workloads
+- ✅ FastAPI deployment (2 replicas) + service
+- ✅ Superset deployment (1 replica) + service
+- ✅ ExternalSecret wiring for database credentials
+- ✅ ConfigMap for non-secret configuration
+- ✅ Ingress resources for ALB provisioning
+- ✅ Cluster add-ons: Fluent Bit (logs) + CloudWatch agent (metrics)
+- ✅ Top-level `kubernetes/README.md` (apply order)
+- ✅ `docs/eks-deployment.md` (end-to-end picture)
+
+The manifests deliberately exclude Postgres, Redis, Kafka, MinIO, and
+LocalStack — those are now managed AWS services.
+
+---
+
+*Earlier phases: A1–A9.*

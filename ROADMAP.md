@@ -135,7 +135,7 @@ services.
 
 ---
 
-## Phase A10 — Kubernetes manifests (next)
+## Phase A10 — Kubernetes manifests ✅
 
 **Scope:** Adapt the OpenBI manifests for EKS.
 
@@ -149,7 +149,7 @@ services.
 
 ---
 
-## Phase A11 — Deployment scripts + documentation
+## Phase A11 — Deployment scripts + documentation (next)
 
 **Scope:** The end-to-end story.
 

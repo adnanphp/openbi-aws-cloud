@@ -1,0 +1,182 @@
+# CloudWatch agent DaemonSet for Container Insights.
+#
+# Collects node and pod metrics from kubelet, ships to CloudWatch
+# Metrics under the ContainerInsights namespace. Those metrics power the
+# EKS panels in the Phase A9 dashboard.
+#
+# Applied via:
+#   kubectl apply -f kubernetes/cluster-addons/cloudwatch-agent.yaml
+#
+# Requires an IRSA role for the CloudWatch agent with:
+#   - cloudwatch:PutMetricData
+#   - ec2:DescribeVolumes, ec2:DescribeTags
+#   - logs:PutLogEvents, logs:DescribeLogStreams, logs:CreateLogStream, logs:CreateLogGroup
+#
+# Replace the placeholder ARN below with the real one created by
+# Terraform (a small follow-up to A9).
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: amazon-cloudwatch
+  labels:
+    app.kubernetes.io/name: amazon-cloudwatch
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cloudwatch-agent
+  namespace: amazon-cloudwatch
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::ACCOUNT_ID:role/REPLACE-WITH-CW-AGENT-ROLE
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cwagentconfig
+  namespace: amazon-cloudwatch
+data:
+  cwagentconfig.json: |
+    {
+      "agent": {
+        "region": "eu-central-1"
+      },
+      "logs": {
+        "metrics_collected": {
+          "kubernetes": {
+            "cluster_name": "openbi-dev",
+            "metrics_collection_interval": 60
+          }
+        },
+        "force_flush_interval": 5
+      },
+      "metrics": {
+        "namespace": "ContainerInsights",
+        "metrics_collected": {
+          "cpu": {
+            "measurement": [
+              {"name": "cpu_usage_idle", "rename": "CPU_IDLE", "unit": "Percent"},
+              "cpu_usage_iowait",
+              "cpu_usage_user",
+              "cpu_usage_system"
+            ],
+            "metrics_collection_interval": 60,
+            "totalcpu": false
+          },
+          "disk": {
+            "measurement": [
+              {"name": "used_percent", "rename": "DISK_USED", "unit": "Percent"}
+            ],
+            "metrics_collection_interval": 60,
+            "resources": ["*"]
+          },
+          "diskio": {
+            "measurement": ["write_bytes", "read_bytes", "writes", "reads"],
+            "metrics_collection_interval": 60,
+            "resources": ["*"]
+          },
+          "mem": {
+            "measurement": [
+              {"name": "mem_used_percent", "rename": "MEM_USED", "unit": "Percent"}
+            ],
+            "metrics_collection_interval": 60
+          },
+          "netstat": {
+            "measurement": ["tcp_established", "tcp_time_wait"],
+            "metrics_collection_interval": 60
+          },
+          "swap": {
+            "measurement": ["swap_used_percent", "swap_free"],
+            "metrics_collection_interval": 60
+          }
+        }
+      }
+    }
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: cloudwatch-agent
+  namespace: amazon-cloudwatch
+  labels:
+    k8s-app: cloudwatch-agent
+spec:
+  selector:
+    matchLabels:
+      k8s-app: cloudwatch-agent
+  template:
+    metadata:
+      labels:
+        k8s-app: cloudwatch-agent
+    spec:
+      serviceAccountName: cloudwatch-agent
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      tolerations:
+        - operator: Exists
+      containers:
+        - name: cloudwatch-agent
+          image: public.ecr.aws/cloudwatch-agent/cloudwatch-agent:latest
+          env:
+            - name: HOST_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: HOST_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: K8S_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          resources:
+            limits:
+              cpu: 200m
+              memory: 200Mi
+            requests:
+              cpu: 50m
+              memory: 100Mi
+          volumeMounts:
+            - name: cwagentconfig
+              mountPath: /etc/cwagentconfig
+            - name: rootfs
+              mountPath: /rootfs
+              readOnly: true
+            - name: dockersock
+              mountPath: /var/run/docker.sock
+              readOnly: true
+            - name: varlibdocker
+              mountPath: /var/lib/docker
+              readOnly: true
+            - name: containerdsock
+              mountPath: /run/containerd/containerd.sock
+              readOnly: true
+            - name: sys
+              mountPath: /sys
+              readOnly: true
+            - name: devdisk
+              mountPath: /dev/disk
+              readOnly: true
+      volumes:
+        - name: cwagentconfig
+          configMap:
+            name: cwagentconfig
+        - name: rootfs
+          hostPath:
+            path: /
+        - name: dockersock
+          hostPath:
+            path: /var/run/docker.sock
+        - name: varlibdocker
+          hostPath:
+            path: /var/lib/docker
+        - name: containerdsock
+          hostPath:
+            path: /run/containerd/containerd.sock
+        - name: sys
+          hostPath:
+            path: /sys
+        - name: devdisk
+          hostPath:
+            path: /dev/disk/

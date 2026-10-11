@@ -1,0 +1,53 @@
+# Ingress resources for OpenBI services.
+#
+# The AWS Load Balancer Controller (Phase A8) provisions an ALB based
+# on these. Both Ingresses share the same ALB via the group.name
+# annotation.
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: openbi-api
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internal
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+    alb.ingress.kubernetes.io/healthcheck-path: /health
+    alb.ingress.kubernetes.io/group.name: openbi
+spec:
+  ingressClassName: alb
+  rules:
+    - host: api.openbi.internal
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: fastapi
+                port:
+                  number: 8000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: openbi-superset
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internal
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+    alb.ingress.kubernetes.io/healthcheck-path: /
+    alb.ingress.kubernetes.io/group.name: openbi
+spec:
+  ingressClassName: alb
+  rules:
+    - host: superset.openbi.internal
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: superset
+                port:
+                  number: 8088
