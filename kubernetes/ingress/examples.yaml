@@ -1,0 +1,105 @@
+
+Example Ingress resources for the AWS Load Balancer Controller.
+These are reference examples. They assume a service exists in the
+target namespace (e.g. the OpenBI FastAPI service).
+Ingresses are applied via:
+kubectl apply -f kubernetes/ingress/examples.yaml
+The controller will provision an ALB, target groups, and listeners
+based on these resources.
+----------------------------------------------------------------------
+HTTP-only Ingress (no ACM certificate required)
+----------------------------------------------------------------------
+Simplest case: internal ALB, HTTP on port 80, targeting pod IPs.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+name: openbi-api-http
+namespace: openbi
+annotations:
+alb.ingress.kubernetes.io/scheme: internal
+alb.ingress.kubernetes.io/target-type: ip
+alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+alb.ingress.kubernetes.io/healthcheck-path: /health
+alb.ingress.kubernetes.io/group.name: openbi
+spec:
+ingressClassName: alb
+rules:
+
+host: api.openbi.internal
+http:
+paths:
+
+path: /
+pathType: Prefix
+backend:
+service:
+name: fastapi
+port:
+number: 8000
+
+----------------------------------------------------------------------
+HTTPS Ingress (requires an ACM certificate)
+----------------------------------------------------------------------
+Only valid if domain_name was set in the ALB module so an ACM
+certificate exists. Replace CERTIFICATE_ARN with the real ARN from:
+terraform output -raw alb_certificate_arn
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+name: openbi-api-https
+namespace: openbi
+annotations:
+alb.ingress.kubernetes.io/scheme: internet-facing
+alb.ingress.kubernetes.io/target-type: ip
+alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}, {"HTTP":80}]'
+alb.ingress.kubernetes.io/certificate-arn: CERTIFICATE_ARN
+alb.ingress.kubernetes.io/ssl-redirect: "443"
+alb.ingress.kubernetes.io/healthcheck-path: /health
+alb.ingress.kubernetes.io/group.name: openbi
+spec:
+ingressClassName: alb
+rules:
+
+host: api.openbi.example.com
+http:
+paths:
+
+path: /
+pathType: Prefix
+backend:
+service:
+name: fastapi
+port:
+number: 8000
+
+----------------------------------------------------------------------
+Multi-service Ingress (one ALB, path-based routing)
+----------------------------------------------------------------------
+Ingresses with the same group.name annotation share one ALB. This
+is how you run multiple services behind a single load balancer.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+name: openbi-superset
+namespace: openbi
+annotations:
+alb.ingress.kubernetes.io/scheme: internal
+alb.ingress.kubernetes.io/target-type: ip
+alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+alb.ingress.kubernetes.io/healthcheck-path: /health
+alb.ingress.kubernetes.io/group.name: openbi
+spec:
+ingressClassName: alb
+rules:
+
+host: superset.openbi.internal
+http:
+paths:
+
+path: /
+pathType: Prefix
+backend:
+service:
+name: superset
+port:
+number: 8088

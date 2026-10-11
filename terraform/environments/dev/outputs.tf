@@ -119,3 +119,17 @@ output "sqs_dlq_url" {
   description = "URL of the dead-letter queue"
   value       = module.sqs.dlq_url
 }
+
+# ----------------------------------------------------------------------
+# ALB outputs
+# ----------------------------------------------------------------------
+
+output "alb_controller_role_arn" {
+  description = "ARN of the IRSA role for the AWS Load Balancer Controller"
+  value       = module.alb.controller_role_arn
+}
+
+output "alb_certificate_arn" {
+  description = "ARN of the ACM certificate (null if not configured)"
+  value       = module.alb.certificate_arn
+}

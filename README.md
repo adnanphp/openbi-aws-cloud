@@ -210,3 +210,19 @@ Phase A7 delivers SQS messaging:
 ---
 
 *Earlier phases: A1 (VPC), A2 (IAM), A3 (ECR), A4 (EKS), A5 (S3), A6 (RDS).*
+
+---
+
+## Status — Phase A8 (current)
+
+Phase A8 delivers ALB + Ingress:
+
+- ✅ IRSA role for the AWS Load Balancer Controller
+- ✅ Optional ACM certificate (domain-driven; skipped if no domain)
+- ✅ Helm install documentation for the controller
+- ✅ Example Ingress resources (HTTP-only, HTTPS, multi-service)
+- ✅ `docs/alb.md`
+
+---
+
+*Earlier phases: A1 (VPC), A2 (IAM), A3 (ECR), A4 (EKS), A5 (S3), A6 (RDS), A7 (SQS).*

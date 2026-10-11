@@ -106,7 +106,7 @@ services.
 
 ---
 
-## Phase A8 — ALB + Ingress (next)
+## Phase A8 — ALB + Ingress ✅
 
 **Scope:** External access.
 
@@ -120,7 +120,7 @@ services.
 
 ---
 
-## Phase A9 — CloudWatch + Secrets Manager
+## Phase A9 — CloudWatch + Secrets Manager (next)
 
 **Scope:** Observability and secrets.
 

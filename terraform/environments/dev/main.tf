@@ -208,3 +208,27 @@ module "sqs" {
 
   tags = local.common_tags
 }
+
+# ----------------------------------------------------------------------
+# ALB / Ingress
+# ----------------------------------------------------------------------
+
+module "alb" {
+  source = "../../modules/alb"
+
+  name_prefix  = local.name_prefix
+  cluster_name = module.eks.cluster_name
+
+  oidc_provider_arn = module.eks.oidc_provider_arn
+  oidc_provider_url = module.eks.oidc_provider_url
+
+  # HTTPS is opt-in. Leave domain_name empty for HTTP-only.
+  # To enable HTTPS:
+  #   domain_name       = "openbi.example.com"
+  #   route53_zone_id   = "Z0123456789ABC"
+  domain_name = ""
+  # subject_alternative_names = ["*.openbi.example.com"]
+  # route53_zone_id = "..."
+
+  tags = local.common_tags
+}
