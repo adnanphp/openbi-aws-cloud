@@ -129,3 +129,28 @@ module "eks" {
 
   tags = local.common_tags
 }
+
+# ----------------------------------------------------------------------
+# S3
+# ----------------------------------------------------------------------
+
+module "s3" {
+  source = "../../modules/s3"
+
+  name_prefix   = local.name_prefix
+  bucket_suffix = var.bucket_suffix
+
+  # Default encryption: SSE-S3 (free, always on).
+  # To use SSE-KMS instead, set:
+  #   encryption_type = "aws:kms"
+  #   kms_key_arn     = <your key ARN>
+  encryption_type = "AES256"
+
+  # Lifecycle tuning (defaults match the module).
+  raw_transition_ia_days      = 30
+  raw_transition_glacier_days = 90
+  raw_expiration_days         = 365
+  processed_expiration_days   = 90
+
+  tags = local.common_tags
+}

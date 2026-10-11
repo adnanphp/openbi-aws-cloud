@@ -66,7 +66,7 @@ services.
 
 ---
 
-## Phase A5 — S3 (next)
+## Phase A5 — S3 ✅
 
 **Scope:** Object storage to replace MinIO.
 
@@ -79,7 +79,7 @@ services.
 
 ---
 
-## Phase A6 — RDS for PostgreSQL
+## Phase A6 — RDS for PostgreSQL (next)
 
 **Scope:** Managed Postgres to replace the local Postgres.
 

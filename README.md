@@ -153,3 +153,21 @@ See [ROADMAP.md](ROADMAP.md) for the full plan.
 ---
 
 *Earlier phases: A1 (VPC), A2 (IAM), A3 (ECR).*
+
+---
+
+## Status — Phase A5 (current)
+
+Phase A5 delivers S3 object storage:
+
+- ✅ Three buckets: raw (versioning on), processed, models (versioning on)
+- ✅ Encryption (SSE-S3 default; SSE-KMS optional)
+- ✅ Lifecycle policies tuned per bucket
+- ✅ Public access blocked at the bucket level
+- ✅ Bucket policies denying non-account access and insecure transport
+- ✅ `python/s3_operations.py` — boto3 examples
+- ✅ `docs/s3.md`
+
+---
+
+*Earlier phases: A1 (VPC), A2 (IAM), A3 (ECR), A4 (EKS).*

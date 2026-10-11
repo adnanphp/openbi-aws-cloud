@@ -65,3 +65,22 @@ output "eks_oidc_provider_arn" {
   description = "ARN of the OIDC provider"
   value       = module.eks.oidc_provider_arn
 }
+
+# ----------------------------------------------------------------------
+# S3 outputs
+# ----------------------------------------------------------------------
+
+output "s3_raw_bucket" {
+  description = "Name of the raw data bucket"
+  value       = module.s3.raw_bucket_name
+}
+
+output "s3_processed_bucket" {
+  description = "Name of the processed data bucket"
+  value       = module.s3.processed_bucket_name
+}
+
+output "s3_models_bucket" {
+  description = "Name of the models bucket"
+  value       = module.s3.models_bucket_name
+}
