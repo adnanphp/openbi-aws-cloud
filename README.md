@@ -226,3 +226,22 @@ Phase A8 delivers ALB + Ingress:
 ---
 
 *Earlier phases: A1 (VPC), A2 (IAM), A3 (ECR), A4 (EKS), A5 (S3), A6 (RDS), A7 (SQS).*
+
+---
+
+## Status — Phase A9 (current)
+
+Phase A9 delivers CloudWatch observability and Secrets Manager:
+
+- ✅ Log groups per service with 14-day retention
+- ✅ CloudWatch dashboard as code (EKS, RDS, SQS, logs panels)
+- ✅ Three alarms (RDS CPU, SQS DLQ depth, ALB 5xx rate) with SNS topic
+- ✅ Secrets Manager IRSA role for External Secrets Operator
+  (scoped to `openbi/dev/*` prefix)
+- ✅ Expanded `kubernetes/external-secrets/` with ClusterSecretStore
+  and example ExternalSecret
+- ✅ `docs/cloudwatch.md`, `docs/secrets.md`
+
+---
+
+*Earlier phases: A1 (VPC), A2 (IAM), A3 (ECR), A4 (EKS), A5 (S3), A6 (RDS), A7 (SQS), A8 (ALB).*

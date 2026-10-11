@@ -232,3 +232,62 @@ module "alb" {
 
   tags = local.common_tags
 }
+
+# ----------------------------------------------------------------------
+# CloudWatch
+# ----------------------------------------------------------------------
+
+module "cloudwatch" {
+  source = "../../modules/cloudwatch"
+
+  name_prefix = local.name_prefix
+
+  # Log retention: 14 days for application logs.
+  log_retention_days = 14
+
+  # Service log groups.
+  service_names = [
+    "fastapi",
+    "superset",
+    "cluster-autoscaler",
+    "external-secrets",
+    "aws-load-balancer-controller",
+  ]
+
+  # Alarm thresholds.
+  rds_cpu_alarm_threshold = 80
+  alb_5xx_alarm_threshold = 5
+
+  # Resources to monitor.
+  cluster_name   = module.eks.cluster_name
+  db_instance_id = module.rds.db_instance_id
+  dlq_name       = module.sqs.dlq_name
+
+  # ALB arn suffix is added later, once an ALB exists.
+  alb_arn_suffix = ""
+
+  tags = local.common_tags
+}
+
+# ----------------------------------------------------------------------
+# Secrets Manager (External Secrets Operator IRSA role)
+# ----------------------------------------------------------------------
+
+module "secrets" {
+  source = "../../modules/secrets"
+
+  name_prefix = local.name_prefix
+
+  secret_path_prefix = "openbi/dev"
+
+  cluster_name      = module.eks.cluster_name
+  oidc_provider_arn = module.eks.oidc_provider_arn
+  oidc_provider_url = module.eks.oidc_provider_url
+
+  # External Secrets Operator runs in this namespace with this
+  # ServiceAccount (installed via Helm — see kubernetes/external-secrets/).
+  external_secrets_namespace       = "external-secrets"
+  external_secrets_service_account = "external-secrets"
+
+  tags = local.common_tags
+}

@@ -133,3 +133,31 @@ output "alb_certificate_arn" {
   description = "ARN of the ACM certificate (null if not configured)"
   value       = module.alb.certificate_arn
 }
+
+# ----------------------------------------------------------------------
+# CloudWatch outputs
+# ----------------------------------------------------------------------
+
+output "cloudwatch_dashboard_name" {
+  description = "Name of the CloudWatch dashboard"
+  value       = module.cloudwatch.dashboard_name
+}
+
+output "cloudwatch_alarm_topic_arn" {
+  description = "SNS topic for CloudWatch alarms"
+  value       = module.cloudwatch.alarm_topic_arn
+}
+
+# ----------------------------------------------------------------------
+# Secrets outputs
+# ----------------------------------------------------------------------
+
+output "eso_role_arn" {
+  description = "ARN of the IRSA role for External Secrets Operator"
+  value       = module.secrets.eso_role_arn
+}
+
+output "secrets_prefix" {
+  description = "Prefix under which OpenBI secrets should be stored"
+  value       = module.secrets.secret_path_prefix
+}

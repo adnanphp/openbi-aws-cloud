@@ -120,7 +120,7 @@ services.
 
 ---
 
-## Phase A9 — CloudWatch + Secrets Manager (next)
+## Phase A9 — CloudWatch + Secrets Manager ✅
 
 **Scope:** Observability and secrets.
 
@@ -135,7 +135,7 @@ services.
 
 ---
 
-## Phase A10 — Kubernetes manifests
+## Phase A10 — Kubernetes manifests (next)
 
 **Scope:** Adapt the OpenBI manifests for EKS.
 
