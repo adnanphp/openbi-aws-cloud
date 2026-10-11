@@ -125,3 +125,11 @@ Phase A2 delivers the IAM foundation:
 ---
 
 *Earlier: Phase A1 delivered the VPC (see [ROADMAP.md](ROADMAP.md)).*
+
+## Continuous integration
+
+Every push to `main` runs offline validation on the Terraform and JSON
+policies. The workflow needs no AWS credentials and creates no
+resources.
+
+![Green CI runs](docs/images/workflows_01.png)
